@@ -1,0 +1,1 @@
+local a="000AAA"function tRNG.setRegistrationNumber(b)a=b end;function tRNG.getRegistrationNumber()return a end

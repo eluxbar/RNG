@@ -1,0 +1,1 @@
+AddEventHandler('onClientMapStart',function()exports.rng:setAutoSpawn(false)exports.rng:spawnPlayer()SetClockTime(24,0,0)end)

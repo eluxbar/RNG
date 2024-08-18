@@ -1,0 +1,253 @@
+-- local b = {}
+-- local c = {}
+-- local e
+-- local f = 0
+-- local g = 0
+-- local h = false
+-- local i
+-- local j
+-- local k = false
+-- local l = module("cfg/cfg_playerdealership")
+-- local function s(t, u, v, w)
+--     DeleteVehicle(GetVehiclePedIsIn(tRNG.getPlayerPed(), false))
+--     local x = GetHashKey(t)
+--     RequestModel(x)
+--     local y = 0
+--     while not HasModelLoaded(x) and y < 100 do
+--         Citizen.Wait(10)
+--         y = y + 1
+--     end
+--     if HasModelLoaded(x) then
+--         local z = CreateVehicle(x, u, v, w, GetEntityHeading(tRNG.getPlayerPed()), false, false)
+--         DecorSetInt(z, tRNG.getAcDecor(), 955)
+--         SetEntityAsMissionEntity(z)
+--         FreezeEntityPosition(z, true)
+--         SetEntityInvincible(z, true)
+--         SetVehicleDoorsLocked(z, 4)
+--         SetModelAsNoLongerNeeded(x)
+--         TaskWarpPedIntoVehicle(tRNG.getPlayerPed(), z, -1)
+--         Citizen.CreateThread(function()
+--             while DoesEntityExist(z) do
+--                 Citizen.Wait(25)
+--                 SetEntityHeading(z, GetEntityHeading(z) + 1 % 360)
+--             end
+--         end)
+--         h = true
+--         return z
+--     else
+--         tRNG.notify("~r~Could not load vehicle")
+--         return -1
+--     end
+-- end
+-- CreateThread(function()
+--     for A, B in pairs(l.positions) do
+--         local C, D, E, F, G = B.posVector,B.blipId,B.blipColour,B.markerId,B.markerColourTable
+--         tRNG.addBlip(C.x, C.y, C.z, D, E, "Player Dealership")
+--         tRNG.addMarker(C.x, C.y, C.z, 0.7, 0.7, 0.5, G[1], G[2], G[3], 125, 50, F, true, true)
+--     end
+-- end)
+
+-- local function p()
+--     RageUI.Visible(RMenu:Get("playerdealership", "mainmenu"), true)
+-- end
+-- local function r()
+--     RageUI.CloseAll()
+--     RageUI.Visible(RMenu:Get("playerdealership", "mainmenu"), false)
+-- end
+-- Citizen.CreateThread(function()
+--     while true do
+--         for A, B in pairs(l.positions) do
+--             local C, J, D, E, F, G, H, I = B.posVector,B.previewVector,B.blipId,B.blipColour,B.markerId,B.markerColourTable,B.permissionsTable,B.categorys
+--             if c[A] ~= nil then
+--                 if c[A] < 2.0 then
+--                     TriggerServerEvent("RNG:getPlayerDealershipCatalogue")
+--                     p()
+--                     while c[A] < 2.0 or h or isNearPreviewVector(J) or k do
+--                         Wait(0)
+--                     end
+--                     r()
+--                 end
+--             end
+--         end
+--         Wait(0)
+--     end
+-- end)
+
+-- Citizen.CreateThread(function()
+--     while true do
+--         if l.positions ~= nil then
+--             for A, B in pairs(l.positions) do
+--                 local C, D, E, F, G, H, I =B.posVector,B.blipId,B.blipColour,B.markerId,B.markerColourTable,B.permissionsTable,B.categorys
+--                 c[A] = #(tRNG.getPlayerCoords() - C)
+--             end
+--         end
+--         Wait(250)
+--     end
+-- end)
+
+-- local dealershipCatalogue = {}
+-- RegisterNetEvent("RNG:gotPlayerDealershipCatalogue", function(catalogue)
+--     dealershipCatalogue = catalogue
+-- end)
+-- local vehiclesToList = {}
+-- RegisterNetEvent("RNG:gotVehiclesToList", function(vehicles)
+--     vehiclesToList = vehicles
+-- end)
+-- RegisterNetEvent("RNG:newVehicleListing", function()
+--     TriggerServerEvent("RNG:getPlayerDealershipCatalogue")
+-- end)
+-- RegisterNetEvent("RNG:listingCancelled", function()
+--     r()
+--     h = false
+--     DeleteVehicle(f)
+--     f = 0
+--     g = 0
+--     SetEntityCoords(tRNG.getPlayerPed(), l.positions[1].posVector)
+-- end)
+
+-- RMenu.Add("playerdealership","mainmenu",RageUI.CreateMenu("", "", tRNG.getRageUIMenuWidth(), tRNG.getRageUIMenuHeight(), "banners",  "dealership"))
+-- RMenu:Get("playerdealership","mainmenu"):SetSubtitle("~b~Categories")
+-- RMenu.Add("playerdealership","all_vehicles",RageUI.CreateSubMenu(RMenu:Get("playerdealership", "mainmenu"),"","~b~Vehicles to be listed",tRNG.getRageUIMenuWidth(),tRNG.getRageUIMenuHeight()))
+-- RMenu.Add("playerdealership","dealership_vehicles",RageUI.CreateSubMenu(RMenu:Get("playerdealership", "mainmenu"),"","~b~Dealership Vehicles",tRNG.getRageUIMenuWidth(),tRNG.getRageUIMenuHeight()))
+-- RMenu.Add("playerdealership","vehicle",RageUI.CreateSubMenu(RMenu:Get("playerdealership", "dealership_vehicles"),"","~b~Vehicle Information",tRNG.getRageUIMenuWidth(),tRNG.getRageUIMenuHeight()))
+-- RMenu.Add("playerdealership","confirm",RageUI.CreateSubMenu(RMenu:Get("playerdealership", "vehicle"),"","~b~Are you sure?",tRNG.getRageUIMenuWidth(),tRNG.getRageUIMenuHeight()))
+-- RageUI.CreateWhile(1.0, true, function()
+--     RageUI.IsVisible(RMenu:Get("playerdealership", "mainmenu"),true,true,true,function()
+--         RageUI.ButtonWithStyle("View Dealership Vehicles","Display all player listed vehicles",{RightLabel = "→→→"},true,function(N, O, P)
+--         end,RMenu:Get("playerdealership", "dealership_vehicles"))
+--         RageUI.ButtonWithStyle("List your own vehicle","There will be a £100,000 initial sale fee when creating the listing and a "..tRNG.getTaxDisplay().."% fee when the vehicle sells.",{RightLabel = "→→→"},true,function(N, O, P)
+--             if P then
+--                 TriggerServerEvent('RNG:getVehiclesToList')
+--             end
+--         end,RMenu:Get("playerdealership", "all_vehicles"))
+--     end,function()end)
+--     RageUI.IsVisible(RMenu:Get("playerdealership", "all_vehicles"),true,true,true,function()
+--         RageUI.Separator("~HC_58~You may only list owned baller locked vehicles. If you already have a vehicle listed, you must cancel it in the dealership vehicles menu.")
+--         local aY = {}
+--         for a,b in pairs(vehiclesToList) do
+--             table.insert(aY, {vehicleId = b[2], vehicleName = b[1], uuid = a})
+--         end
+--         table.sort(aY,function(R, S)
+--             return R.vehicleName < S.vehicleName
+--         end)
+--         for T, K in pairs(aY) do
+--             local E = K.vehicleId
+--             local aT = K.vehicleName
+--             local uuid = K.uuid
+--             if canVehicleBeSold(E) and not dealershipCatalogue[tostring(uuid)] then
+--                 RageUI.ButtonWithStyle(aT, "", {RightLabel = "→→→"}, true,function(aO, aP, aQ)
+--                     if aQ then
+--                         TriggerServerEvent("RNG:listPlayerDealershipVehicle", uuid)
+--                     end
+--                 end)
+--             end
+--         end
+--     end,function()end)
+--     RageUI.IsVisible(RMenu:Get("playerdealership", "dealership_vehicles"),true,true,true,function()
+--         RageUI.Separator("~HC_58~Dealership vehicles will be listed here until Monday restart. They then will have to be relisted.")
+--         local B = l.positions[1]
+--         local C, J, D, E, F, G = B.posVector,B.previewVector,B.blipId,B.blipColour,B.markerId,B.markerColourTable
+--         local aY = {}
+--         for a,b in pairs(dealershipCatalogue) do
+--             table.insert(aY, {name = b.name, sale_price = b.sale_price, uuid = a, spawncode = b.spawncode, max_speed = b.max_speed, rarity = b.rarity, owner_name = b.owner_name, owner_id = b.owner_id, boot_size = b.boot_size})
+--         end
+--         table.sort(aY,function(R, S)
+--             return R.name < S.name
+--         end)
+--         for k,v in pairs(aY) do
+--             local liveryCount = ""
+--             if GetVehicleLiveryCount(tRNG.getPlayerVehicle()) > 0 then
+--                 liveryCount = string.format(" | Liveries (%s)",GetVehicleLiveryCount(tRNG.getPlayerVehicle()))
+--             end
+--             RageUI.ButtonWithStyle(v.name,"Boot size (" .. v.boot_size .. "kg)"..liveryCount,{RightLabel = "£" .. getMoneyStringFormatted(v.sale_price)},true,function(N, O, P)
+--                 if O then
+--                     if f == 0 or g ~= v.spawncode then
+--                         DeleteVehicle(f)
+--                         f = s(v.spawncode, J.x, J.y, J.z)
+--                         g = v.spawncode
+--                     end
+--                 end
+--                 if P then
+--                     j = k
+--                     i = v
+--                 end
+--             end,RMenu:Get("playerdealership", "vehicle"))
+--         end
+--     end,function()end)
+--     RageUI.IsVisible(RMenu:Get("playerdealership", "vehicle"),true,true,true,function()
+--         RageUI.Separator(i.name)
+--         RageUI.Separator("Spawncode: "..i.spawncode)
+--         RageUI.Separator(string.format("Max Speed: %s mph",i.max_speed))
+--         RageUI.Separator("Rarity: 1:"..i.rarity)
+--         RageUI.Separator(string.format("Owner: %s (ID: %s)",i.owner_name,i.owner_id))
+--         RageUI.Separator("Boot Size: "..i.boot_size.."kg")
+--         if i.owner_id == tRNG.getUserId() then
+--             RageUI.ButtonWithStyle("Cancel Listing","",{RightLabel = "→→→"},true,function(N, O, P)
+--                 if P then
+--                     TriggerServerEvent("RNG:cancelPlayerDealershipListing", i.uuid)
+--                 end
+--             end)
+--         else
+--             RageUI.ButtonWithStyle("Purchase " .. i.name,"Sale Price: ~g~£"..getMoneyStringFormatted(i.sale_price),{RightLabel = "→→→"},true,function(N, O, P)
+--             end,RMenu:Get("playerdealership", "confirm"))
+--             RageUI.ButtonWithStyle("Test Drive " .. i.name,"This will spawn the vehicle with the current owner's selected upgrades.",{RightLabel = "→→→"},true,function(N, O, P)
+--                 if P then
+--                     TriggerServerEvent("RNG:testPlayerDealershipVehicle", i.uuid)
+--                 end
+--             end)
+--         end
+--     end,function()end)
+--     RageUI.IsVisible(RMenu:Get("playerdealership", "confirm"),true,true,true,function()
+--         RageUI.ButtonWithStyle("Yes","",{RightLabel = "→→→"},true,function(N, O, P)
+--             if P then
+--                 TriggerServerEvent("RNG:purchasePlayerDealershipVehicle", i.uuid)
+--             end
+--         end,RMenu:Get("playerdealership", "mainmenu"))
+--         RageUI.ButtonWithStyle("No","",{RightLabel = "→→→"},true,function(N, O, P)
+--             if P then
+--                 tRNG.notify("~y~Cancelled!")
+--             end
+--         end,
+--         RMenu:Get("playerdealership", "mainmenu"))
+--     end,function()end)
+-- end)
+
+-- tRNG.createThreadOnTick(function()
+--     if h then
+--         if IsControlJustPressed(0, 177) then
+--             while DoesEntityExist(f) do
+--                 DeleteVehicle(f)
+--                 Wait(50)
+--             end
+--             f = 0
+--             g = 0
+--             h = false
+--             tRNG.teleport(l.positions[1].posVector)
+--         end
+--     end
+-- end)
+
+-- RegisterNetEvent("RNG:startPlayerDealershipVehicleTestDrive", function(uuid, vehicle, mods)
+--     DeleteVehicle(GetVehiclePedIsIn(tRNG.getPlayerPed()))
+--     if not k then
+--         RageUI.CloseAll()
+--         k = true
+--         DeleteEntity(f)
+--         f = 0
+--         g = 0
+--         h = false
+--         local m = tRNG.loadModel(vehicle)
+--         testDriveCar = tRNG.spawnVehicle(m,-914.83026123046,-3287.1538085938,13.521618843078,60.962993621826,GetEntityHeading(tRNG.getPlayerPed()),true,true,true)
+--         tRNG.applyModsOnVehicle(mods, uuid, testDriveCar)
+--         DecorSetInt(testDriveCar, tRNG.getAcDecor(), 955)
+--         setVehicleFuel(testDriveCar, 100)
+--         tRNG.notify("~g~Please exit the vehicle when you are done testing.")
+--         while GetVehiclePedIsIn(tRNG.getPlayerPed()) ~= 0 do
+--             Wait(0)
+--         end
+--         DeleteVehicle(testDriveCar)
+--         p()
+--         k = false
+--         tRNG.teleport(l.positions[1].posVector)
+--     end
+-- end)
